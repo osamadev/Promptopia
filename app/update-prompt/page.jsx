@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "@components/Form";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -11,6 +11,7 @@ const EditPrompt = () => {
   const [submitting, setSubmitting] = useState(false);
   const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
+  const [loading, setLoading] = useState(true); // New loading state
   const [post, setPost] = useState({
     prompt: "",
     tag: "",
@@ -18,12 +19,15 @@ const EditPrompt = () => {
 
   useEffect(() => {
     const fetchPostDetails = async () => {
+        setLoading(true);
       const response = await fetch(`/api/prompt/${promptId}`);
       const data = await response.json();
       setPost({
         prompt: data.prompt,
         tag: data.tag,
       });
+      setLoading(false); // End loading once data is fetched
+
     };
     if (promptId) fetchPostDetails();
   }, [promptId]);
@@ -55,7 +59,6 @@ const EditPrompt = () => {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
     <Form
       type="Update"
       post={post}
@@ -63,7 +66,6 @@ const EditPrompt = () => {
       submitting={submitting}
       handleSubmit={updatePrompt}
     />
-    </Suspense>
   );
 };
 
