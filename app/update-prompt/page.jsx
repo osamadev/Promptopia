@@ -5,21 +5,22 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const EditPrompt = () => {
+const page = () => {
   const router = useRouter();
     const { data: session } = useSession();
   const [submitting, setSubmitting] = useState(false);
-  const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
   const [loading, setLoading] = useState(true); // New loading state
   const [post, setPost] = useState({
     prompt: "",
     tag: "",
   });
+  const promptId = null; // New promptId state
 
   useEffect(() => {
     const fetchPostDetails = async () => {
         setLoading(true);
+        const searchParams = useSearchParams();
+  const promptId = searchParams.get("id");
       const response = await fetch(`/api/prompt/${promptId}`);
       const data = await response.json();
       setPost({
@@ -69,4 +70,4 @@ const EditPrompt = () => {
   );
 };
 
-export default EditPrompt;
+export default page;
